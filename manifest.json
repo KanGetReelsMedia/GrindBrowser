@@ -1,23 +1,12 @@
 {
-  "id": "/?source=pwa",
-  "name": "Grind Browser - Ad First Video",
+  "name": "Grind Browser",
   "short_name": "Grind",
-  "description": "Ad-first video browser. Watch ads first, unlock grind content. Works offline as PWA.",
-  "start_url": "./index.html?utm_source=pwa",
-  "scope": "./",
+  "description": "Ad-first video browser - watch ads, get content",
+  "start_url": "./index.html",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "browser"],
-  "orientation": "any",
-  "background_color": "#09090b",
+  "background_color": "#0a0a0a",
   "theme_color": "#A3E635",
-  "categories": ["entertainment", "video", "productivity"],
-  "launch_handler": {
-    "client_mode": ["navigate-existing", "auto"]
-  },
-  "handle_links": "preferred",
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
+  "orientation": "any",
   "icons": [
     {
       "src": "icon-72x72.png",
@@ -78,37 +67,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Grind Browser Desktop View"
-    },
-    {
-      "src": "screenshot-narrow.png",
-      "sizes": "720x1280",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Grind Browser Mobile View"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Watch Grind Video",
-      "short_name": "Watch",
-      "description": "Ad → Your grind video",
-      "url": "./index.html?grind=watch",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "New Tab",
-      "short_name": "New Tab",
-      "url": "./index.html?newtab",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
     }
   ]
 }
