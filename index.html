@@ -2,166 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Grind Browser</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="theme-color" content="#A3E635">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Grind Browser">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            lime: { DEFAULT: '#a3e635', dark: '#84cc16', light: '#bef264', glow: 'rgba(163,230,53,0.25)', dim: 'rgba(163,230,53,0.1)' },
-            black: { bg: '#09090b', panel: '#121215', card: '#18181b', border: '#27272a', hover: '#202024' }
+            lime: { DEFAULT: '#a3e635', dark: '#84cc16' },
+            black: { bg: '#09090b', panel: '#121215', card: '#18181b', border: '#27272a' }
           }
         }
       }
     }
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
     *{font-family:'Inter',sans-serif}
-    ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#09090b}::-webkit-scrollbar-thumb{background:#27272a;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#a3e635}
-    iframe.webview-frame{width:100%;height:100%;border:none;background:#09090b}
-    .bg-grid-pattern{background-size:30px 30px;background-image:linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px)}
+    .no-scrollbar::-webkit-scrollbar{display:none}
+    iframe.webview{width:100%;height:100%;border:none;background:#09090b}
   </style>
 </head>
-<body class="bg-black-bg text-zinc-100 h-screen w-screen flex flex-col overflow-hidden select-none">
-  <header class="bg-black-bg h-9 px-4 flex items-center justify-between border-b border-black-border text-xs z-30 shrink-0">
-    <div class="flex items-center gap-3">
-      <button id="toggle-sidebar-btn" class="text-zinc-400 hover:text-lime p-1 rounded hover:bg-black-card">☰</button>
-      <div class="flex items-center gap-2 font-black tracking-wider">
-        <span class="bg-lime text-black px-1.5 py-0.5 rounded text-[10px]">GRIND</span>
-        <span class="text-zinc-300 font-semibold text-xs">BROWSER</span>
+<body class="bg-[#09090b] text-zinc-100 h-[100dvh] w-screen flex flex-col overflow-hidden">
+
+  <!-- MOBILE HEADER -->
+  <header class="h-14 px-3 flex items-center justify-between bg-[#121215] border-b border-[#27272a] shrink-0 z-30">
+    <div class="flex items-center gap-2">
+      <button id="menu-btn" class="w-9 h-9 rounded-xl bg-[#18181b] border border-[#27272a] flex items-center justify-center text-zinc-400">☰</button>
+      <div class="flex items-center gap-1.5">
+        <img src="icon-192x192.png" class="w-7 h-7 rounded-lg border border-lime/30">
+        <span class="font-black text-[13px] tracking-wider">GRIND<span class="font-light text-lime ml-1">BROWSER</span></span>
       </div>
-      <span class="ml-4 text-[10px] text-lime border border-lime/30 px-2 py-0.5 rounded-full">PWA • NO IFRAME BLOCK BYPASS</span>
-    </div>
-    <div class="flex items-center gap-3 text-zinc-400 text-[11px]">
-      <span id="status-text" class="text-lime">✓ PWA Ready</span>
-      <button id="install-pwa-btn" class="hidden bg-lime text-black px-2 py-0.5 rounded font-bold">Install App</button>
-    </div>
-  </header>
-  <div class="flex-1 flex overflow-hidden relative">
-    <aside id="side-panel" class="w-72 bg-black-panel border-r border-black-border flex flex-col gap-4 p-3 overflow-y-auto shrink-0 z-20">
-      <div class="flex items-center justify-between pb-2 border-b border-black-border">
-        <span class="text-xs font-bold uppercase tracking-wider text-lime">Productivity Dock</span>
-        <span class="text-[10px] text-zinc-500 bg-black-card px-1.5 py-0.5 rounded border border-black-border">Active</span>
-      </div>
-      <div class="bg-black-card border border-black-border rounded-lg p-3 flex flex-col gap-2">
-        <span class="text-xs font-semibold text-zinc-300">Scratchpad Notes</span>
-        <textarea id="scratchpad-input" class="w-full h-24 bg-black-bg border border-black-border rounded p-2 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-lime resize-none font-mono" placeholder="Quick thoughts..."></textarea>
-      </div>
-      <div class="bg-black-card border border-black-border rounded-lg p-3 flex flex-col gap-2">
-        <span class="text-xs font-semibold text-zinc-300">Ad-First Test</span>
-        <div class="flex flex-col gap-1 text-[11px] text-zinc-400">
-          <label>Main Video (non-YPP):</label>
-          <input id="main-video-input" value="Ocxd9eUUl0I" class="bg-black-bg border border-black-border rounded px-2 py-1 text-xs text-white">
-          <label>Grind Ad:</label>
-          <input id="ad-video-input" value="F8X7TmILPuc" class="bg-black-bg border border-black-border rounded px-2 py-1 text-xs text-white">
-          <button id="test-grind-btn" class="mt-2 bg-lime text-black font-bold py-1.5 rounded text-xs">PLAY AD → VIDEO</button>
-        </div>
-      </div>
-      <div class="bg-black-card border border-black-border rounded-lg p-3 mt-auto">
-        <span class="text-xs font-semibold text-zinc-400">How PWA Works</span>
-        <div class="text-[11px] text-zinc-500 mt-2 leading-relaxed">
-          • Desktop uses &lt;webview&gt;<br>
-          • Mobile PWA uses &lt;iframe&gt;<br>
-          • Ad-first flow works on both<br>
-          • Install to bypass popup blocks
-        </div>
-      </div>
-    </aside>
-    <main class="flex-1 flex flex-col relative bg-black-bg">
-      <!-- START PAGE -->
-      <div id="start-page" class="flex-1 bg-grid-pattern flex flex-col items-center justify-center p-6 overflow-y-auto">
-        <div class="w-full max-w-2xl flex flex-col items-center gap-8">
-          <div class="flex flex-col items-center gap-2">
-            <img src="icon-192x192.png" class="w-16 h-16 rounded-2xl border-2 border-lime/40" alt="G">
-            <h1 class="text-3xl font-black text-white mt-2">GRIND <span class="text-lime font-light">BROWSER</span></h1>
-            <p class="text-xs text-zinc-400">PWA • Works on Android/iPhone • No app store needed</p>
-          </div>
-          <div class="w-full relative">
-            <input id="central-search-input" type="text" placeholder="Search or enter https://wwe.com" class="w-full pl-12 pr-28 py-4 bg-black-card/80 border border-black-border focus:border-lime text-white rounded-2xl text-sm outline-none">
-            <div class="absolute left-0 top-0 bottom-0 pl-4 flex items-center text-lime">🔍</div>
-          </div>
-          <div class="text-[11px] text-zinc-500 text-center max-w-md">
-            Try: <span class="text-lime cursor-pointer" onclick="navigateTo('https://wwe.com')">wwe.com</span> • 
-            <span class="text-lime cursor-pointer" onclick="navigateTo('https://example.com')">example.com</span> •
-            <span class="text-lime cursor-pointer" onclick="navigateTo('grind://watch?v=Ocxd9eUUl0I')">your video test</span>
-          </div>
-        </div>
-      </div>
-      <!-- REAL BROWSER VIEW - PWA USES IFRAME -->
-      <div id="browser-view" class="hidden flex-1 flex flex-col">
-        <div class="h-9 bg-black-panel border-b border-black-border flex items-center px-3 gap-2 text-xs">
-          <span id="page-status" class="text-lime">● Loading</span>
-          <span id="page-url" class="text-zinc-400 truncate flex-1"></span>
-          <button id="back-to-start" class="text-zinc-400 hover:text-white border border-black-border px-2 py-0.5 rounded">← Start</button>
-        </div>
-        <div class="flex-1 relative bg-black-bg">
-          <iframe id="main-frame" class="webview-frame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
-        </div>
-      </div>
-      <!-- AD-FIRST PLAYER OVERLAY -->
-      <div id="ad-player-view" class="hidden absolute inset-0 bg-black z-30 flex flex-col">
-        <div class="h-9 bg-black-panel flex items-center px-4 justify-between text-xs">
-          <span class="text-lime font-bold">GRIND NETWORK • Ad First → Your Grind</span>
-          <button id="close-ad-player" class="text-zinc-400 hover:text-white">✕ Close</button>
-        </div>
-        <div class="flex-1 relative bg-black">
-          <iframe id="ad-frame" class="webview-frame" src="about:blank" allow="autoplay; fullscreen" allowfullscreen></iframe>
-          <div id="ad-overlay" class="absolute top-4 left-4 bg-lime text-black text-xs font-bold px-2 py-1 rounded">AD • GRIND NETWORK • Skip in <span id="skip-count">5</span>s</div>
-          <button id="skip-ad-btn" class="hidden absolute bottom-8 right-8 bg-white text-black px-4 py-2 rounded-full text-sm font-bold">Skip Ad →</button>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="bg-black-panel border-t-2 border-lime flex flex-col gap-1 p-2 z-30 shrink-0">
-    <div class="flex items-center gap-1 overflow-x-auto pb-1" id="tab-container">
-      <div class="tab-item active bg-lime text-black px-3 py-1 rounded-t-md text-xs font-bold flex items-center gap-2">
-        <span>New Tab</span><button class="close-tab ml-2">✕</button>
-      </div>
-      <button id="add-tab-btn" class="px-2 py-1 text-lime font-bold">+</button>
     </div>
     <div class="flex items-center gap-2">
-      <button id="btn-back" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400 hover:text-white">←</button>
-      <button id="btn-forward" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400 hover:text-white">→</button>
-      <button id="btn-refresh" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400 hover:text-white">↻</button>
-      <div class="flex-1 flex items-center bg-black-bg border border-black-border rounded-lg px-3 h-9">
-        <span id="protocol-label" class="text-lime font-mono font-bold text-xs mr-2">https://</span>
-        <input id="address-bar-input" type="text" placeholder="https://wwe.com or grind://newtab" class="bg-transparent text-xs text-white w-full outline-none font-mono">
-      </div>
-      <button id="btn-bookmark" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400">🔖</button>
-      <div class="w-8 h-8 rounded-lg bg-lime text-black font-black text-xs flex items-center justify-center">JS</div>
+      <span class="text-[9px] bg-lime/10 text-lime border border-lime/20 px-2 py-1 rounded-full">PWA</span>
+      <button id="install-btn" class="hidden bg-lime text-black text-[11px] font-bold px-3 py-1.5 rounded-full">Install</button>
     </div>
+  </header>
+
+  <!-- DRAWER + OVERLAY -->
+  <div id="overlay" class="hidden fixed inset-0 bg-black/60 z-20"></div>
+  <aside id="sidebar" class="fixed left-0 top-14 bottom-0 w-[85%] max-w-[320px] bg-[#121215] border-r border-[#27272a] z-30 -translate-x-full transition-transform duration-300 flex flex-col p-4 gap-4 overflow-y-auto no-scrollbar">
+    <div class="bg-[#18181b] border border-[#27272a] rounded-2xl p-4">
+      <p class="text-xs font-bold text-lime mb-2">Scratchpad</p>
+      <textarea id="notes" class="w-full h-28 bg-[#09090b] border border-[#27272a] rounded-xl p-3 text-xs text-zinc-200 focus:border-lime outline-none resize-none" placeholder="Quick thoughts..."></textarea>
+    </div>
+    <div class="bg-[#18181b] border border-[#27272a] rounded-2xl p-4">
+      <p class="text-xs font-bold text-zinc-300 mb-3">Ad-First Test</p>
+      <div class="flex flex-col gap-2">
+        <input id="main-video-input" value="Ocxd9eUUl0I" class="bg-[#09090b] border border-[#27272a] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-lime">
+        <input id="ad-video-input" value="F8X7TmILPuc" class="bg-[#09090b] border border-[#27272a] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-lime">
+        <button id="test-grind-btn" class="mt-1 bg-lime text-black font-black py-3 rounded-xl text-xs tracking-wider">PLAY AD → VIDEO</button>
+      </div>
+    </div>
+    <div class="mt-auto text-[10px] text-zinc-500 leading-relaxed">
+      PWA installs like a real app.<br>Grind protocol works offline.
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 flex flex-col relative overflow-hidden">
+    
+    <!-- START PAGE - MOBILE CENTERED -->
+    <div id="start-page" class="flex-1 flex flex-col items-center justify-center p-5 overflow-y-auto">
+      <div class="w-full max-w-[380px] flex flex-col items-center gap-6">
+        <img src="icon-192x192.png" class="w-20 h-20 rounded-[22px] border-2 border-lime/30 shadow-[0_0_30px_rgba(163,230,53,0.2)]">
+        <div class="text-center">
+          <h1 class="text-[28px] font-black tracking-tight">GRIND <span class="font-light text-lime">BROWSER</span></h1>
+          <p class="text-[12px] text-zinc-500 mt-1">Tap to browse, no app store needed</p>
+        </div>
+
+        <div class="w-full relative">
+          <input id="central-search-input" type="text" placeholder="Search or type wwe.com" class="w-full pl-11 pr-4 py-4 bg-[#18181b] border border-[#27272a] focus:border-lime text-white rounded-[18px] text-[14px] outline-none">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lime">⌕</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 w-full">
+          <button onclick="navigateTo('https://wwe.com')" class="bg-[#18181b] border border-[#27272a] rounded-2xl py-3 flex flex-col items-center gap-1">
+            <span class="text-lg">🤼</span><span class="text-[10px] text-zinc-400">WWE</span>
+          </button>
+          <button onclick="navigateTo('https://youtube.com')" class="bg-[#18181b] border border-[#27272a] rounded-2xl py-3 flex flex-col items-center gap-1">
+            <span class="text-lg">▶️</span><span class="text-[10px] text-zinc-400">YouTube</span>
+          </button>
+          <button onclick="navigateTo('grind://watch?v=Ocxd9eUUl0I')" class="bg-lime/10 border border-lime/20 rounded-2xl py-3 flex flex-col items-center gap-1">
+            <span class="text-lg">⚡</span><span class="text-[10px] text-lime">Grind Test</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BROWSER VIEW -->
+    <div id="browser-view" class="hidden flex-1 flex flex-col">
+      <div class="h-10 bg-[#121215] border-b border-[#27272a] flex items-center px-3 gap-2 text-[11px]">
+        <span id="page-status" class="text-lime shrink-0">●</span>
+        <span id="page-url" class="text-zinc-500 truncate flex-1"></span>
+        <button id="back-to-start" class="bg-[#18181b] border border-[#27272a] px-3 py-1 rounded-full text-zinc-400">Home</button>
+      </div>
+      <iframe id="main-frame" class="webview flex-1 bg-[#09090b]" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
+    </div>
+
+    <!-- AD PLAYER - MOBILE FULL -->
+    <div id="ad-player-view" class="hidden absolute inset-0 bg-black z-40 flex flex-col">
+      <div class="h-14 bg-[#121215] flex items-center px-4 justify-between">
+        <span class="text-lime font-black text-xs tracking-wider">GRIND • AD FIRST</span>
+        <button id="close-ad-player" class="w-8 h-8 rounded-full bg-[#18181b] border border-[#27272a]">✕</button>
+      </div>
+      <div class="flex-1 relative bg-black">
+        <iframe id="ad-frame" class="webview" src="about:blank" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <div id="ad-overlay" class="absolute top-3 left-3 bg-lime text-black text-[11px] font-black px-3 py-1.5 rounded-full">AD • Skip in <span id="skip-count">5</span>s</div>
+        <button id="skip-ad-btn" class="hidden absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-8 py-3 rounded-full text-sm font-black shadow-2xl">Skip Ad →</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MOBILE BOTTOM BAR -->
+  <footer class="h-[64px] bg-[#121215] border-t-2 border-lime flex items-center px-2 gap-1.5 shrink-0 z-30">
+    <button id="btn-back" class="w-11 h-11 rounded-xl bg-[#18181b] border border-[#27272a] text-zinc-400">←</button>
+    <button id="btn-refresh" class="w-11 h-11 rounded-xl bg-[#18181b] border border-[#27272a] text-zinc-400">↻</button>
+    <div class="flex-1 flex items-center bg-[#09090b] border border-[#27272a] rounded-xl px-3 h-11">
+      <span id="protocol-label" class="text-lime font-mono font-bold text-[11px] mr-1.5">grind://</span>
+      <input id="address-bar-input" type="text" placeholder="newtab" class="bg-transparent text-[13px] text-white w-full outline-none">
+    </div>
+    <button id="add-tab-btn" class="w-11 h-11 rounded-xl bg-lime text-black font-black">+</button>
   </footer>
+
 <script>
-  // PWA Install handling
   let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('install-pwa-btn').classList.remove('hidden');
+  window.addEventListener('beforeinstallprompt', e=>{
+    e.preventDefault(); deferredPrompt=e;
+    document.getElementById('install-btn').classList.remove('hidden');
   });
-  document.getElementById('install-pwa-btn')?.addEventListener('click', async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-    }
+  document.getElementById('install-btn')?.addEventListener('click', async()=>{
+    if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; }
   });
-  // Service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  function toggleMenu(){
+    const closed = sidebar.classList.contains('-translate-x-full');
+    if(closed){ sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
+    else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
   }
+  document.getElementById('menu-btn').onclick = toggleMenu;
+  overlay.onclick = toggleMenu;
+
   const mainFrame = document.getElementById('main-frame');
   const adFrame = document.getElementById('ad-frame');
   const startPage = document.getElementById('start-page');
@@ -171,89 +162,77 @@
   const centralInput = document.getElementById('central-search-input');
   const protocolLabel = document.getElementById('protocol-label');
   const pageUrl = document.getElementById('page-url');
-  function showStart() {
+
+  function showStart(){
     startPage.classList.remove('hidden');
     browserView.classList.add('hidden');
     adPlayerView.classList.add('hidden');
-    addressInput.value = 'grind://newtab';
-    protocolLabel.textContent = 'grind://';
-    mainFrame.src = 'about:blank';
-    adFrame.src = 'about:blank';
+    addressInput.value='newtab';
+    protocolLabel.textContent='grind://';
+    if(!sidebar.classList.contains('-translate-x-full')) toggleMenu();
   }
-  function normalize(input){
-    input = input.trim();
-    if (input.startsWith('grind://')) return input;
-    if (input.startsWith('https://') || input.startsWith('http://')) return input;
-    if (input.includes('.') && !input.includes(' ')) return 'https://' + input;
-    return 'https://duckduckgo.com/?q=' + encodeURIComponent(input);
+  function normalize(i){
+    i=i.trim();
+    if(i.startsWith('grind://')) return i;
+    if(i.startsWith('https://')||i.startsWith('http://')) return i;
+    if(i.includes('.')&&!i.includes(' ')) return 'https://'+i;
+    return 'https://duckduckgo.com/?q='+encodeURIComponent(i);
   }
-  window.navigateTo = function(url) {
-    url = normalize(url);
-    if (url.startsWith('grind://')) {
-      if (url.includes('watch?v=')) {
-        const match = url.match(/v=([^&]+)/);
-        const mainId = match ? match[1] : document.getElementById('main-video-input').value;
-        playGrindFlow(mainId);
+  window.navigateTo = function(url){
+    url=normalize(url);
+    if(url.startsWith('grind://')){
+      if(url.includes('watch?v=')){
+        const m=url.match(/v=([^&]+)/);
+        playGrindFlow(m?m[1]:document.getElementById('main-video-input').value);
         return;
       }
-      showStart();
-      return;
+      showStart(); return;
     }
     startPage.classList.add('hidden');
     adPlayerView.classList.add('hidden');
     browserView.classList.remove('hidden');
-    mainFrame.src = url;
-    addressInput.value = url;
-    protocolLabel.textContent = url.startsWith('https') ? 'https://' : 'http://';
-    pageUrl.textContent = url;
-    document.getElementById('page-status').textContent='● Loading '+url;
-    mainFrame.onload = () => document.getElementById('page-status').textContent='● Loaded';
+    mainFrame.src=url;
+    addressInput.value=url.replace('https://','');
+    protocolLabel.textContent='https://';
+    pageUrl.textContent=url;
   }
-  function playGrindFlow(mainVideoId) {
-    const adId = document.getElementById('ad-video-input').value || 'F8X7TmILPuc';
-    const mainId = mainVideoId || document.getElementById('main-video-input').value || 'Ocxd9eUUl0I';
+  function playGrindFlow(mainVideoId){
+    const adId=document.getElementById('ad-video-input').value||'F8X7TmILPuc';
+    const mainId=mainVideoId||document.getElementById('main-video-input').value||'Ocxd9eUUl0I';
     startPage.classList.add('hidden');
     browserView.classList.add('hidden');
     adPlayerView.classList.remove('hidden');
-    
-    adFrame.src = `https://www.youtube.com/embed/${adId}?autoplay=1&enablejsapi=1`;
-    addressInput.value = `grind://ad/${adId} → video/${mainId}`;
-    protocolLabel.textContent = 'grind://';
-    
-    let count = 5;
-    const skipCount = document.getElementById('skip-count');
-    const skipBtn = document.getElementById('skip-ad-btn');
+    adFrame.src=`https://www.youtube.com/embed/${adId}?autoplay=1`;
+    addressInput.value=`ad/${adId} → video/${mainId}`;
+    let count=5;
+    const skipCount=document.getElementById('skip-count');
+    const skipBtn=document.getElementById('skip-ad-btn');
     skipBtn.classList.add('hidden');
     document.getElementById('ad-overlay').classList.remove('hidden');
-    const interval = setInterval(()=>{
-      count--;
-      skipCount.textContent = count;
-      if (count<=0){
+    const interval=setInterval(()=>{
+      count--; skipCount.textContent=count;
+      if(count<=0){
         clearInterval(interval);
         skipBtn.classList.remove('hidden');
-        document.getElementById('ad-overlay').textContent = 'AD • Grind Network';
+        document.getElementById('ad-overlay').textContent='Grind Network';
       }
     },1000);
-    skipBtn.onclick = () => {
+    skipBtn.onclick=()=>{
       clearInterval(interval);
-      adFrame.src = `https://www.youtube.com/embed/${mainId}?autoplay=1&start=22`;
-      document.getElementById('ad-overlay').textContent = 'NOW PLAYING • YOUR GRIND • Non-YPP Verified ✓';
+      adFrame.src=`https://www.youtube.com/embed/${mainId}?autoplay=1`;
+      document.getElementById('ad-overlay').textContent='NOW PLAYING';
       skipBtn.classList.add('hidden');
-      addressInput.value = `grind://watch?v=${mainId} [via ad ${adId}]`;
     };
   }
   centralInput.addEventListener('keypress', e=>{ if(e.key==='Enter') navigateTo(centralInput.value)});
   addressInput.addEventListener('keypress', e=>{ if(e.key==='Enter') navigateTo(addressInput.value)});
-  document.getElementById('back-to-start').onclick = showStart;
-  document.getElementById('close-ad-player').onclick = showStart;
-  document.getElementById('test-grind-btn').onclick = ()=> playGrindFlow();
-  document.getElementById('btn-back').onclick = ()=> { try{ mainFrame.contentWindow.history.back(); }catch{} };
-  document.getElementById('btn-forward').onclick = ()=> { try{ mainFrame.contentWindow.history.forward(); }catch{} };
-  document.getElementById('btn-refresh').onclick = ()=> { mainFrame.src = mainFrame.src; };
-  document.getElementById('toggle-sidebar-btn').onclick = ()=> document.getElementById('side-panel').classList.toggle('hidden');
-  document.getElementById('add-tab-btn').onclick = showStart;
+  document.getElementById('back-to-start').onclick=showStart;
+  document.getElementById('close-ad-player').onclick=showStart;
+  document.getElementById('test-grind-btn').onclick=()=>{ if(!sidebar.classList.contains('-translate-x-full')) toggleMenu(); playGrindFlow(); };
+  document.getElementById('btn-back').onclick=()=>{ try{ mainFrame.contentWindow.history.back(); }catch{} };
+  document.getElementById('btn-refresh').onclick=()=>{ mainFrame.src=mainFrame.src; };
+  document.getElementById('add-tab-btn').onclick=showStart;
   showStart();
 </script>
 </body>
 </html>
-
