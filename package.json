@@ -1,0 +1,17 @@
+{
+  "name": "grind-browser-mobile",
+  "version": "1.0.0",
+  "description": "Grind Browser Mobile - Ad-First Video",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx cap copy",
+    "android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}
