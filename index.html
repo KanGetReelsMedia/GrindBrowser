@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grind Browser</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            lime: { DEFAULT: '#a3e635', dark: '#84cc16', light: '#bef264', glow: 'rgba(163,230,53,0.25)', dim: 'rgba(163,230,53,0.1)' },
+            black: { bg: '#09090b', panel: '#121215', card: '#18181b', border: '#27272a', hover: '#202024' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    *{font-family:'Inter',sans-serif}
+    ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#09090b}::-webkit-scrollbar-thumb{background:#27272a;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#a3e635}
+    webview{width:100%;height:100%;border:none}
+    .bg-grid-pattern{background-size:30px 30px;background-image:linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px)}
+  </style>
+</head>
+<body class="bg-black-bg text-zinc-100 h-screen w-screen flex flex-col overflow-hidden select-none">
+
+  <header class="bg-black-bg h-9 px-4 flex items-center justify-between border-b border-black-border text-xs z-30 shrink-0" style="-webkit-app-region: drag;">
+    <div class="flex items-center gap-3" style="-webkit-app-region: no-drag;">
+      <button id="toggle-sidebar-btn" class="text-zinc-400 hover:text-lime p-1 rounded hover:bg-black-card">☰</button>
+      <div class="flex items-center gap-2 font-black tracking-wider">
+        <span class="bg-lime text-black px-1.5 py-0.5 rounded text-[10px]">GRIND</span>
+        <span class="text-zinc-300 font-semibold text-xs">BROWSER</span>
+      </div>
+      <span class="ml-4 text-[10px] text-lime border border-lime/30 px-2 py-0.5 rounded-full">REAL HTTPS • NO IFRAME BLOCK</span>
+    </div>
+    <div class="flex items-center gap-3 text-zinc-400 text-[11px]" style="-webkit-app-region: no-drag;">
+      <span id="status-text" class="text-lime">✓ Real browser engine</span>
+      <button id="layout-toggle" class="hover:text-lime">Toggle Layout</button>
+    </div>
+  </header>
+
+  <div class="flex-1 flex overflow-hidden relative">
+    <aside id="side-panel" class="w-72 bg-black-panel border-r border-black-border flex flex-col gap-4 p-3 overflow-y-auto shrink-0 z-20">
+      <div class="flex items-center justify-between pb-2 border-b border-black-border">
+        <span class="text-xs font-bold uppercase tracking-wider text-lime">Productivity Dock</span>
+        <span class="text-[10px] text-zinc-500 bg-black-card px-1.5 py-0.5 rounded border border-black-border">Active</span>
+      </div>
+      <div class="bg-black-card border border-black-border rounded-lg p-3 flex flex-col gap-2">
+        <span class="text-xs font-semibold text-zinc-300">Scratchpad Notes</span>
+        <textarea id="scratchpad-input" class="w-full h-24 bg-black-bg border border-black-border rounded p-2 text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-lime resize-none font-mono" placeholder="Quick thoughts..."></textarea>
+      </div>
+      <div class="bg-black-card border border-black-border rounded-lg p-3 flex flex-col gap-2">
+        <span class="text-xs font-semibold text-zinc-300">Ad-First Test</span>
+        <div class="flex flex-col gap-1 text-[11px] text-zinc-400">
+          <label>Main Video (non-YPP):</label>
+          <input id="main-video-input" value="Ocxd9eUUl0I" class="bg-black-bg border border-black-border rounded px-2 py-1 text-xs text-white">
+          <label>Grind Ad:</label>
+          <input id="ad-video-input" value="F8X7TmILPuc" class="bg-black-bg border border-black-border rounded px-2 py-1 text-xs text-white">
+          <button id="test-grind-btn" class="mt-2 bg-lime text-black font-bold py-1.5 rounded text-xs">PLAY AD → VIDEO</button>
+        </div>
+      </div>
+      <div class="bg-black-card border border-black-border rounded-lg p-3 mt-auto">
+        <span class="text-xs font-semibold text-zinc-400">Workspaces</span>
+        <div class="grid grid-cols-2 gap-1.5 mt-2">
+          <button class="workspace-btn px-2 py-1.5 bg-lime-dim text-lime border border-lime/30 rounded text-xs">⚡ Deep Work</button>
+          <button class="workspace-btn px-2 py-1.5 bg-black-bg text-zinc-400 border border-black-border rounded text-xs">🎨 Design</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative bg-black-bg">
+      <!-- START PAGE -->
+      <div id="start-page" class="flex-1 bg-grid-pattern flex flex-col items-center justify-center p-6 overflow-y-auto">
+        <div class="w-full max-w-2xl flex flex-col items-center gap-8">
+          <div class="flex flex-col items-center gap-2">
+            <div class="w-16 h-16 rounded-2xl bg-black-card border-2 border-lime/40 flex items-center justify-center">
+              <span class="text-2xl font-black text-lime">G</span>
+            </div>
+            <h1 class="text-3xl font-black text-white mt-2">GRIND <span class="text-lime font-light">BROWSER</span></h1>
+            <p class="text-xs text-zinc-400">Real HTTPS browser • No iframe blocks • No IE pop-out</p>
+          </div>
+          <div class="w-full relative">
+            <input id="central-search-input" type="text" placeholder="Search or enter https://wwe.com" class="w-full pl-12 pr-28 py-4 bg-black-card/80 border border-black-border focus:border-lime text-white rounded-2xl text-sm outline-none">
+            <div class="absolute left-0 top-0 bottom-0 pl-4 flex items-center text-lime">🔍</div>
+          </div>
+          <div class="text-[11px] text-zinc-500 text-center max-w-md">
+            This is the REAL desktop app. Type any https:// site and it loads. No "refused to connect".<br>
+            Try: <span class="text-lime cursor-pointer" onclick="navigateTo('https://wwe.com')">wwe.com</span> • 
+            <span class="text-lime cursor-pointer" onclick="navigateTo('https://example.com')">example.com</span> •
+            <span class="text-lime cursor-pointer" onclick="navigateTo('grind://watch?v=Ocxd9eUUl0I')">your video test</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- REAL BROWSER VIEW -->
+      <div id="browser-view" class="hidden flex-1 flex flex-col">
+        <div class="h-9 bg-black-panel border-b border-black-border flex items-center px-3 gap-2 text-xs">
+          <span id="page-status" class="text-lime">● Loading</span>
+          <span id="page-url" class="text-zinc-400 truncate flex-1"></span>
+          <button id="back-to-start" class="text-zinc-400 hover:text-white border border-black-border px-2 py-0.5 rounded">← Start</button>
+        </div>
+        <div class="flex-1 relative">
+          <webview id="main-webview" src="about:blank" class="w-full h-full"></webview>
+        </div>
+      </div>
+
+      <!-- AD-FIRST PLAYER OVERLAY -->
+      <div id="ad-player-view" class="hidden absolute inset-0 bg-black z-30 flex flex-col">
+        <div class="h-9 bg-black-panel flex items-center px-4 justify-between text-xs">
+          <span class="text-lime font-bold">GRIND NETWORK • Ad First → Your Grind</span>
+          <button id="close-ad-player" class="text-zinc-400 hover:text-white">✕ Close</button>
+        </div>
+        <div class="flex-1 relative bg-black">
+          <webview id="ad-webview" src="about:blank" class="w-full h-full"></webview>
+          <div id="ad-overlay" class="absolute top-4 left-4 bg-lime text-black text-xs font-bold px-2 py-1 rounded">AD • GRIND NETWORK • Skip in <span id="skip-count">5</span>s</div>
+          <button id="skip-ad-btn" class="hidden absolute bottom-8 right-8 bg-white text-black px-4 py-2 rounded-full text-sm font-bold">Skip Ad →</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="bg-black-panel border-t-2 border-lime flex flex-col gap-1 p-2 z-30 shrink-0">
+    <div class="flex items-center gap-1 overflow-x-auto pb-1" id="tab-container">
+      <div class="tab-item active bg-lime text-black px-3 py-1 rounded-t-md text-xs font-bold flex items-center gap-2">
+        <span>New Tab</span><button class="close-tab ml-2">✕</button>
+      </div>
+      <button id="add-tab-btn" class="px-2 py-1 text-lime font-bold">+</button>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="btn-back" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400 hover:text-white">←</button>
+      <button id="btn-forward" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400 hover:text-white">→</button>
+      <button id="btn-refresh" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400 hover:text-white">↻</button>
+      <div class="flex-1 flex items-center bg-black-bg border border-black-border rounded-lg px-3 h-9">
+        <span id="protocol-label" class="text-lime font-mono font-bold text-xs mr-2">https://</span>
+        <input id="address-bar-input" type="text" placeholder="https://wwe.com or grind://newtab" class="bg-transparent text-xs text-white w-full outline-none font-mono">
+      </div>
+      <button id="btn-bookmark" class="w-8 h-8 rounded-lg bg-black-card border border-black-border text-zinc-400">🔖</button>
+      <div class="w-8 h-8 rounded-lg bg-lime text-black font-black text-xs flex items-center justify-center">JS</div>
+    </div>
+  </footer>
+
+<script>
+  const mainWebview = document.getElementById('main-webview');
+  const adWebview = document.getElementById('ad-webview');
+  const startPage = document.getElementById('start-page');
+  const browserView = document.getElementById('browser-view');
+  const adPlayerView = document.getElementById('ad-player-view');
+  const addressInput = document.getElementById('address-bar-input');
+  const centralInput = document.getElementById('central-search-input');
+  const protocolLabel = document.getElementById('protocol-label');
+  const pageUrl = document.getElementById('page-url');
+
+  function showStart() {
+    startPage.classList.remove('hidden');
+    browserView.classList.add('hidden');
+    adPlayerView.classList.add('hidden');
+    addressInput.value = 'grind://newtab';
+    protocolLabel.textContent = 'grind://';
+  }
+
+  function normalize(input){
+    input = input.trim();
+    if (input.startsWith('grind://')) return input;
+    if (input.startsWith('https://') || input.startsWith('http://')) return input;
+    if (input.includes('.') && !input.includes(' ')) return 'https://' + input;
+    return 'https://duckduckgo.com/?q=' + encodeURIComponent(input);
+  }
+
+  window.navigateTo = function(url) {
+    url = normalize(url);
+    if (url.startsWith('grind://')) {
+      if (url.includes('watch?v=')) {
+        // Ad-first flow
+        const match = url.match(/v=([^&]+)/);
+        const mainId = match ? match[1] : document.getElementById('main-video-input').value;
+        playGrindFlow(mainId);
+        return;
+      }
+      showStart();
+      return;
+    }
+    // REAL https navigation - no iframe block
+    startPage.classList.add('hidden');
+    adPlayerView.classList.add('hidden');
+    browserView.classList.remove('hidden');
+    mainWebview.src = url;
+    addressInput.value = url;
+    protocolLabel.textContent = url.startsWith('https') ? 'https://' : 'http://';
+    pageUrl.textContent = url;
+  }
+
+  function playGrindFlow(mainVideoId) {
+    const adId = document.getElementById('ad-video-input').value || 'F8X7TmILPuc';
+    const mainId = mainVideoId || document.getElementById('main-video-input').value || 'Ocxd9eUUl0I';
+    startPage.classList.add('hidden');
+    browserView.classList.add('hidden');
+    adPlayerView.classList.remove('hidden');
+    
+    // Phase 1: Ad
+    adWebview.src = `https://www.youtube.com/embed/${adId}?autoplay=1&enablejsapi=1`;
+    addressInput.value = `grind://ad/${adId} → video/${mainId}`;
+    protocolLabel.textContent = 'grind://';
+    
+    let count = 5;
+    const skipCount = document.getElementById('skip-count');
+    const skipBtn = document.getElementById('skip-ad-btn');
+    skipBtn.classList.add('hidden');
+    const interval = setInterval(()=>{
+      count--;
+      skipCount.textContent = count;
+      if (count<=0){
+        clearInterval(interval);
+        skipBtn.classList.remove('hidden');
+        document.getElementById('ad-overlay').textContent = 'AD • Grind Network';
+      }
+    },1000);
+
+    skipBtn.onclick = () => {
+      clearInterval(interval);
+      // Phase 2: Main content
+      adWebview.src = `https://www.youtube.com/embed/${mainId}?autoplay=1&start=22`;
+      document.getElementById('ad-overlay').textContent = 'NOW PLAYING • YOUR GRIND • Non-YPP Verified ✓';
+      skipBtn.classList.add('hidden');
+      addressInput.value = `grind://watch?v=${mainId} [via ad ${adId}]`;
+    };
+  }
+
+  // Events
+  centralInput.addEventListener('keypress', e=>{ if(e.key==='Enter') navigateTo(centralInput.value)});
+  addressInput.addEventListener('keypress', e=>{ if(e.key==='Enter') navigateTo(addressInput.value)});
+  document.getElementById('back-to-start').onclick = showStart;
+  document.getElementById('close-ad-player').onclick = showStart;
+  document.getElementById('test-grind-btn').onclick = ()=> playGrindFlow();
+  document.getElementById('btn-back').onclick = ()=> mainWebview.goBack();
+  document.getElementById('btn-forward').onclick = ()=> mainWebview.goForward();
+  document.getElementById('btn-refresh').onclick = ()=> mainWebview.reload();
+  document.getElementById('toggle-sidebar-btn').onclick = ()=> document.getElementById('side-panel').classList.toggle('hidden');
+  document.getElementById('add-tab-btn').onclick = showStart;
+  
+  // Webview events
+  mainWebview.addEventListener('did-start-loading', ()=> document.getElementById('page-status').textContent='● Loading');
+  mainWebview.addEventListener('did-finish-load', ()=> document.getElementById('page-status').textContent='● Loaded');
+  mainWebview.addEventListener('did-navigate', (e)=> {
+    addressInput.value = e.url;
+    pageUrl.textContent = e.url;
+  });
+
+  showStart();
+</script>
+</body>
+</html>
